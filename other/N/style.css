@@ -1,0 +1,200 @@
+:root {
+    --bg-color: #050510;
+    --text-color: #ffffff;
+    --accent-color: #ffd700;
+    /* Gold */
+    --accent-glow: rgba(255, 215, 0, 0.5);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Introduction Screen */
+#intro-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #1a1a2e 0%, #050510 100%);
+    z-index: 100;
+    transition: opacity 1s ease-out;
+}
+
+.envelope {
+    text-align: center;
+    animation: float 3s ease-in-out infinite;
+}
+
+#open-btn {
+    background: transparent;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50px;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+#open-btn:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 25px var(--accent-glow);
+    transform: scale(1.05);
+}
+
+.hint {
+    margin-top: 1.5rem;
+    opacity: 0.6;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Main Content */
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease-in;
+}
+
+#main-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.message-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+    /* Let clicks pass through to canvas if interaction needed */
+}
+
+/* Typography & Effects */
+h1.glow-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: 5rem;
+    font-weight: 400;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1.5s ease-out forwards 0.5s;
+}
+
+h2.year-text {
+    font-size: 8rem;
+    font-weight: 700;
+    background: linear-gradient(to bottom, #fff, #ffd700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: -20px 0;
+    opacity: 0;
+    transform: scale(0.9);
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
+    animation: scaleIn 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 1s;
+}
+
+p.wish-text {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    max-width: 600px;
+    line-height: 1.6;
+    opacity: 0;
+    color: #e0e0e0;
+    animation: fadeIn 1.5s ease-out forwards 2s;
+    background: var(--glass-bg);
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(5px);
+    display: inline-block;
+}
+
+/* Animations */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h1.glow-text {
+        font-size: 3.5rem;
+    }
+
+    h2.year-text {
+        font-size: 5rem;
+    }
+
+    p.wish-text {
+        font-size: 1rem;
+        width: 90%;
+    }
+}

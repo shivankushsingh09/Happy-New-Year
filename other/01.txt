@@ -1,0 +1,7 @@
+<!-- Optional: User can add music.mp3 to the same folder -->
+        <audio id="bg-music" loop>
+            <!-- Using a remote URL for Auld Lang Syne / Happy New Year song -->
+            <source src="https://raw.githubusercontent.com/srdjangosevski/css-greeting-card/master/assets/mp3/song.mp3"
+                type="audio/mpeg">
+            <source src="music.mp3" type="audio/mpeg">
+        </audio>

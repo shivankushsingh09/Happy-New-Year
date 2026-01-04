@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050510;
+            --text-color: #ffffff;
+            --accent-color: #ffd700;
+            /* Gold */
+            --accent-glow: rgba(255, 215, 0, 0.5);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Introduction Screen */
+        #intro-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #050510 100%);
+            z-index: 100;
+            transition: opacity 1s ease-out;
+        }
+
+        .envelope {
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        #open-btn {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        #open-btn:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 25px var(--accent-glow);
+            transform: scale(1.05);
+        }
+
+        .hint {
+            margin-top: 1.5rem;
+            opacity: 0.6;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Main Content */
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-in;
+        }
+
+        #main-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .message-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            pointer-events: none;
+            /* Let clicks pass through to canvas if interaction needed */
+        }
+
+        /* Typography & Effects */
+        h1.glow-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 5rem;
+            font-weight: 400;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1.5s ease-out forwards 0.5s;
+        }
+
+        h2.year-text {
+            font-size: 8rem;
+            font-weight: 700;
+            background: linear-gradient(to bottom, #fff, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: -20px 0;
+            opacity: 0;
+            transform: scale(0.9);
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
+            animation: scaleIn 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 1s;
+        }
+
+        p.wish-text {
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            max-width: 600px;
+            line-height: 1.6;
+            opacity: 0;
+            color: #e0e0e0;
+            animation: fadeIn 1.5s ease-out forwards 2s;
+            background: var(--glass-bg);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+            display: inline-block;
+        }
+
+        /* Animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1.glow-text {
+                font-size: 3.5rem;
+            }
+
+            h2.year-text {
+                font-size: 5rem;
+            }
+
+            p.wish-text {
+                font-size: 1rem;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Intro Screen -->
+    <div id="intro-screen">
+        <div class="envelope">
+            <button id="open-btn">Open Greeting</button>
+            <p class="hint">A special message for you</p>
+        </div>
+    </div>
+
+    <!-- Main Experience -->
+    <div id="main-content" class="hidden">
+        <canvas id="fireworksCanvas"></canvas>
+
+        <div class="message-container">
+            <h1 class="glow-text">Happy New Year</h1>
+            <h2 class="year-text">2026</h2>
+            <p class="wish-text">Wishing you a year filled with light, joy, and endless possibilities.</p>
+        </div>
+
+        <!-- Optional: User can add music.mp3 to the same folder -->
+        <audio id="bg-music" loop>
+            <source src="music.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const introScreen = document.getElementById('intro-screen');
+            const mainContent = document.getElementById('main-content');
+            const openBtn = document.getElementById('open-btn');
+            const bgMusic = document.getElementById('bg-music');
+            const canvas = document.getElementById('fireworksCanvas');
+            const ctx = canvas.getContext('2d');
+
+            let fireworks = [];
+            let particles = [];
+            let animationId;
+
+            // Resize canvas
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Interaction
+            openBtn.addEventListener('click', () => {
+                introScreen.style.opacity = '0';
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                    mainContent.classList.remove('hidden');
+                    mainContent.style.opacity = '1';
+
+                    // Start fireworks
+                    animate();
+
+                    // Try playing audio (if file exists)
+                    bgMusic.volume = 0.5;
+                    bgMusic.play().catch(e => console.log("Audio play failed (user interaction policy or missing file):", e));
+                }, 1000);
+            });
+
+            // Fireworks Logic
+            class Firework {
+                constructor(x, y, targetX, targetY) {
+                    this.x = x;
+                    this.y = y;
+                    this.targetX = targetX;
+                    this.targetY = targetY;
+                    this.speed = 3;
+                    this.angle = Math.atan2(targetY - y, targetX - x);
+                    this.velocities = {
+                        x: Math.cos(this.angle) * this.speed,
+                        y: Math.sin(this.angle) * this.speed
+                    };
+                    this.distanceToTarget = Math.hypot(targetX - x, targetY - y);
+                    this.distanceTraveled = 0;
+                    this.coordinates = [];
+                    this.coordinateCount = 3;
+                    while (this.coordinateCount--) {
+                        this.coordinates.push([this.x, this.y]);
+                    }
+                }
+
+                update(index) {
+                    this.coordinates.pop();
+                    this.coordinates.unshift([this.x, this.y]);
+
+                    this.x += this.velocities.x;
+                    this.y += this.velocities.y;
+                    this.distanceTraveled = Math.hypot(this.x - this.coordinates[this.coordinates.length - 1][0], this.y - this.coordinates[this.coordinates.length - 1][1]);
+
+                    if (Math.hypot(this.targetX - this.x, this.targetY - this.y) < this.distanceTraveled) {
+                        createParticles(this.targetX, this.targetY);
+                        fireworks.splice(index, 1);
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
+                    ctx.lineTo(this.x, this.y);
+                    ctx.strokeStyle = `hsl(${Math.random() * 360}, 50%, 50%)`;
+                    ctx.stroke();
+                }
+            }
+
+            class Particle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.speed = Math.random() * 5 + 1; // Random speed
+                    this.friction = 0.95;
+                    this.gravity = 1;
+                    this.hue = Math.floor(Math.random() * 360);
+                    this.brightness = Math.random() * 50 + 50;
+                    this.alpha = 1;
+                    this.decay = Math.random() * 0.015 + 0.015;
+
+                    this.velocities = {
+                        x: Math.cos(this.angle) * this.speed,
+                        y: Math.sin(this.angle) * this.speed
+                    }
+                }
+
+                update(index) {
+                    this.velocities.x *= this.friction;
+                    this.velocities.y *= this.friction;
+                    this.velocities.y += this.gravity;
+
+                    this.x += this.velocities.x;
+                    this.y += this.velocities.y;
+                    this.alpha -= this.decay;
+
+                    if (this.alpha <= 0) {
+                        particles.splice(index, 1);
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
+                    ctx.fill();
+                }
+            }
+
+            function createParticles(x, y) {
+                let particleCount = 50;
+                while (particleCount--) {
+                    particles.push(new Particle(x, y));
+                }
+            }
+
+            function animate() {
+                animationId = requestAnimationFrame(animate);
+
+                // Trail effect
+                ctx.fillStyle = 'rgba(5, 5, 16, 0.2)'; // Match bg color with some transparency
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Randomly launch fireworks
+                if (Math.random() < 0.03) {
+                    const startX = Math.random() * canvas.width;
+                    const targetX = Math.random() * canvas.width;
+                    const targetY = Math.random() * (canvas.height / 2); // Explode in top half
+                    fireworks.push(new Firework(startX, canvas.height, targetX, targetY));
+                }
+
+                fireworks.forEach((firework, index) => {
+                    firework.update(index);
+                    firework.draw();
+                });
+
+                particles.forEach((particle, index) => {
+                    particle.update(index);
+                    particle.draw();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
